@@ -10,12 +10,14 @@ from pathlib import Path
 from google.cloud import storage
 import fitz  # PyMuPDF
 from itertools import islice
-import nltk
-nltk.download('stopwords')
 import warnings
 warnings.filterwarnings("ignore")
 
 app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "<center><H1>App Deployment Successful</H1></center>"
 
 @app.route('/parse_all_resumes', methods=['POST'])
 def parse_all_resumes():
