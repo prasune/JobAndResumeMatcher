@@ -7,4 +7,4 @@ pyresparser
 google-cloud-storage
 pypdf2
 PyMuPDF
-
+scikit-learn
