@@ -62,6 +62,7 @@ def search_matching_resumes():
     # program to read the extracted data and process
     excel_file = bucket_name + '_resume_data.xlsx'
     df = pd.read_excel(excel_file)
+    df = df.dropna()
 
     # stop word removal
     vectorizer = TfidfVectorizer(stop_words='english')
