@@ -10,6 +10,8 @@ from pathlib import Path
 from google.cloud import storage
 import fitz  # PyMuPDF
 from itertools import islice
+import nltk
+nltk.download('stopwords')
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -94,7 +96,7 @@ def search_matching_resumes():
         result = {
             "id": index + 1,
             "score": row['Similarity'],
-            "path": row['name']  # Assuming 'name' column contains the file path
+            "path": row['name'] 
         }
         response_data['results'].append(result)
 
