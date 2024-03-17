@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
+import nltk
+nltk.download('stopwords')
 from pyresparser import ResumeParser
 import os
 from docx import Document
@@ -11,7 +13,6 @@ from pathlib import Path
 from google.cloud import storage
 import fitz  # PyMuPDF
 from itertools import islice
-import nltk
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -71,7 +72,7 @@ def search_matching_resumes():
     df = df.dropna()
 
     # stop word removal
-    vectorizer = TfidfVectorizer()
+    vectorizer = TfidfVectorizer('stopwords')
     X = vectorizer.fit_transform(df['skills'])
 
     # Apply K-means clustering on the resumes - currently on sample texts
