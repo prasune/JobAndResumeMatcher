@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import pandas as pd
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from pyresparser import ResumeParser
 import os
@@ -84,21 +85,28 @@ def search_matching_resumes():
     cluster_matches = cluster_matches.sort_values(by='Similarity', ascending=False)
     cluster_matches = cluster_matches.head(no_of_matches)
 
+    normalized_scores = (df['Similarity'] - df['Similarity'].min()) / (df['Similarity'].max() - df['Similarity'].min())
+    # Confidence Score Calculation
+    df['confidence'] = np.array(normalized_scores).flatten()
+
+    df_with_confidence = df[df['confidence'] >= threshold]
+    df_with_confidence.sort_values(by='confidence', ascending=False)
+
     # Prepare JSON response
     response_data = {
         "status": "success",
-        "count": len(cluster_matches),
+        "count": len(confidence),
         "metadata": {
-            "confidenceScore": cluster_matches['Similarity'].max() if not cluster_matches.empty else 0
+            "confidenceScore": df_with_confidence['confidence'].max() if not cluster_matches.empty else 0
         },
         "results": []
     }
 
     # Populate results in the JSON response
-    for index, row in cluster_matches.iterrows():
+    for index, row in confidence.iterrows():
         result = {
             "id": index + 1,
-            "score": row['Similarity'],
+            "score": row['confidence'],
             "path": row['name'] 
         }
         response_data['results'].append(result)
