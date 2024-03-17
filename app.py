@@ -95,14 +95,14 @@ def search_matching_resumes():
     cluster_matches = df[df['Cluster'] == df.loc[df['Similarity'].idxmax(), 'Cluster']]
     cluster_matches = cluster_matches[cluster_matches['Similarity'] > 0]
     cluster_matches = cluster_matches.sort_values(by='Similarity', ascending=False)
-    cluster_matches = cluster_matches.head(no_of_matches)
 
     normalized_scores = (df['Similarity'] - df['Similarity'].min()) / (df['Similarity'].max() - df['Similarity'].min())
     # Confidence Score Calculation
     df['confidence'] = np.array(normalized_scores).flatten()
 
     df_with_confidence = df[df['confidence'] >= threshold]
-    df_with_confidence.sort_values(by='confidence', ascending=False)
+    df_with_confidence = df_with_confidence.sort_values(by='confidence', ascending=False)
+    df_with_confidence = df_with_confidence.head(no_of_matches)
 
     # Prepare JSON response
     response_data = {
