@@ -11,6 +11,7 @@ from pathlib import Path
 from google.cloud import storage
 import fitz  # PyMuPDF
 from itertools import islice
+import nltk
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -19,6 +20,10 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     return "<center><H1>App Deployment Successful</H1></center>"
+
+def __init__(self):
+    # Download NLTK stopwords data if not already downloaded
+    nltk.download('stopwords')
 
 @app.route('/parse_all_resumes', methods=['POST'])
 def parse_all_resumes():
