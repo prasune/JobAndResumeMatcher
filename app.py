@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import cosine_similarity
 import nltk
-nltk.download('stopwords')
 from pyresparser import ResumeParser
 import os
 from docx import Document
@@ -14,17 +15,21 @@ from google.cloud import storage
 import fitz  # PyMuPDF
 from itertools import islice
 import warnings
+
 warnings.filterwarnings("ignore")
 
 app = Flask(__name__)
+
+
+def __init__(self):
+    # Download NLTK stopwords data if not already downloaded
+    nltk.download('stopwords')
+
 
 @app.route("/")
 def home():
     return "<center><H1>App Deployment Successful</H1></center>"
 
-def __init__(self):
-    # Download NLTK stopwords data if not already downloaded
-    nltk.download('stopwords')
 
 @app.route('/parse_all_resumes', methods=['POST'])
 def parse_all_resumes():
@@ -57,6 +62,7 @@ def parse_all_resumes():
 
     return jsonify({'status': "success"})
 
+
 @app.route('/search_matching_resumes', methods=['POST'])
 def search_matching_resumes():
     job_description = request.json['context']
@@ -72,7 +78,7 @@ def search_matching_resumes():
     df = df.dropna()
 
     # stop word removal
-    vectorizer = TfidfVectorizer('stopwords')
+    vectorizer = TfidfVectorizer()
     X = vectorizer.fit_transform(df['skills'])
 
     # Apply K-means clustering on the resumes - currently on sample texts
@@ -101,7 +107,7 @@ def search_matching_resumes():
     # Prepare JSON response
     response_data = {
         "status": "success",
-        "count": len(confidence),
+        "count": len(df_with_confidence),
         "metadata": {
             "confidenceScore": df_with_confidence['confidence'].max() if not cluster_matches.empty else 0
         },
@@ -109,11 +115,11 @@ def search_matching_resumes():
     }
 
     # Populate results in the JSON response
-    for index, row in confidence.iterrows():
+    for index, row in df_with_confidence.iterrows():
         result = {
             "id": index + 1,
             "score": row['confidence'],
-            "path": row['name'] 
+            "path": row['name']
         }
         response_data['results'].append(result)
 
@@ -124,9 +130,11 @@ def search_matching_resumes():
 def parse_all_job_descriptions():
     return jsonify({'status': "success"})
 
+
 @app.route('/search_matching_jobs', methods=['POST'])
 def search_matching_jobs():
     return jsonify({'success': "200"})
+
 
 # Function to extract text from PDF using PyMuPDF
 def extract_text_from_pdf(pdf_bytes):
@@ -135,6 +143,7 @@ def extract_text_from_pdf(pdf_bytes):
         for page in pdf:
             text += page.get_text()
     return text
+
 
 # Function to parse resume using Pyresparser
 def parse_resume(text):
@@ -150,6 +159,7 @@ def parse_resume(text):
         # Clean up the temporary file
         os.unlink(temp_file_path)
 
+
 # Function to process a single blob (resume)
 def process_blob(blob):
     resume_bytes = blob.download_as_bytes()
@@ -161,6 +171,7 @@ def process_blob(blob):
         'skills': skills
     }
     return data_dict
+
 
 if __name__ == '__main__':
     app.run(debug=True)
