@@ -1,0 +1,133 @@
+{
+	"info": {
+		"_postman_id": "5b2cbc2f-0fbb-4a81-8a04-471c15dfdcfb",
+		"name": "hackathon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "parse_all_resumes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"inputPath\": \"https://console.cloud.google.com/storage/browser/hackathontestdata2024\"\n}"
+				},
+				"url": {
+					"raw": "https://talentacquisitionapp.azurewebsites.net/parse_all_resumes",
+					"protocol": "https",
+					"host": [
+						"talentacquisitionapp",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"parse_all_resumes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search_matching_resumes",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"context\": \"Java J2EE developer 5 years experience\",\n    \"category\": \"resume\",\n    \"threshold\": 0.7,\n    \"noOfMatches\": 3,\n    \"inputPath\": \"https://console.cloud.google.com/storage/browser/hackathontestdata2024\"\n}"
+				},
+				"url": {
+					"raw": "https://talentacquisitionapp.azurewebsites.net/search_matching_resumes",
+					"protocol": "https",
+					"host": [
+						"talentacquisitionapp",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"search_matching_resumes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "parse_all_job_descriptions",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"inputPath\": \"https://console.cloud.google.com/storage/browser/hackathontestdata2024\"\n}"
+				},
+				"url": {
+					"raw": "https://talentacquisitionapp.azurewebsites.net/parse_all_job_descriptions",
+					"protocol": "https",
+					"host": [
+						"talentacquisitionapp",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"parse_all_job_descriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search_matching_jobs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"context\": \"Java J2EE developer 5 years experience\",\n    \"category\": \"job\",\n    \"threshold\": 0.7,\n    \"noOfMatches\": 3,\n    \"inputPath\": \"https://console.cloud.google.com/storage/browser/hackathontestdata2024\"\n}"
+				},
+				"url": {
+					"raw": "https://talentacquisitionapp.azurewebsites.net/search_matching_jobs",
+					"protocol": "https",
+					"host": [
+						"talentacquisitionapp",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"search_matching_jobs"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
