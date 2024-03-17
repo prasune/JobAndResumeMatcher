@@ -65,7 +65,7 @@ def search_matching_resumes():
     df = df.dropna()
 
     # stop word removal
-    vectorizer = TfidfVectorizer(stop_words='english')
+    vectorizer = TfidfVectorizer()
     X = vectorizer.fit_transform(df['skills'])
 
     # Apply K-means clustering on the resumes - currently on sample texts
