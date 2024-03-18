@@ -126,7 +126,10 @@ def parse_all_job_descriptions():
 def search_matching_jobs():
     return jsonify({'success': "200"})
 
-
+@app.route('/ping', methods=['GET'])
+def app_health_check():
+    return jsonify({'success': "200",'status':"UP})
+                    
 #Function to read data from google cloud storage and create a dataframe
 def get_extracted_df(input_path):
     bucket_name = input_path.split("/")[-1]
