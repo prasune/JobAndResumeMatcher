@@ -126,7 +126,7 @@ def parse_all_job_descriptions():
 def search_matching_jobs():
     return jsonify({'success': "200"})
 
-@app.route('/ping', methods=['GET'])
+@app.route('/ping')
 def app_health_check():
     return jsonify({'success': "200",'status':"UP"})
                     
