@@ -53,9 +53,19 @@ def search_matching_resumes():
     bucket_name = input_path.split("/")[-1]
 
     # program to read the extracted data and process
-    #excel_file = bucket_name + '_resume_data.xlsx'
+    excel_file = bucket_name + '_resume_data.xlsx'
 
-    df = get_extracted_df(input_path)
+    # Check if the Excel file exists
+    if os.path.exists(excel_file):
+        # Process the Excel file
+        df = pd.read_excel(excel_file)
+        # Do further processing with the DataFrame 'df'
+        print("Excel file exists. Processing...")
+    else:
+        print("Excel file does not exist.")
+        df = get_extracted_df(input_path)
+
+
     df = df.dropna()
 
     # stop word removal
