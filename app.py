@@ -34,29 +34,9 @@ def home():
 @app.route('/parse_all_resumes', methods=['POST'])
 def parse_all_resumes():
     input_path = request.json['inputPath']
-    bucket_name = input_path.split("/")[-1]
-
-    path_to_private_key = 'fifth-compass-415612-76f634511b19.json'
-    client = storage.Client.from_service_account_json(json_credentials_path=path_to_private_key)
-    bucket = client.bucket(bucket_name)
-
-    str_folder_name_on_gcs = 'RESUME/data/'
-
-    # Create the directory locally
-    Path(str_folder_name_on_gcs).mkdir(parents=True, exist_ok=True)
-
-    blobs = bucket.list_blobs(prefix=str_folder_name_on_gcs)
-
-    # Limit to the first 100 blobs
-    # TODO we should be removing this slicing of blobs (to avoid performance issues) before checking in
-    limited_blobs = islice(blobs, 100)
-
-    # Use concurrent.futures for parallel processing
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        data_dicts = list(executor.map(process_blob, limited_blobs))
+    df = get_extracted_df(input_path)
 
     # Write the data dictionary to an Excel file
-    df = pd.DataFrame(data_dicts)
     excel_file = bucket_name + '_resume_data.xlsx'
     df.to_excel(excel_file, index=False)
 
@@ -73,8 +53,9 @@ def search_matching_resumes():
     bucket_name = input_path.split("/")[-1]
 
     # program to read the extracted data and process
-    excel_file = bucket_name + '_resume_data.xlsx'
-    df = pd.read_excel(excel_file)
+    #excel_file = bucket_name + '_resume_data.xlsx'
+
+    df = get_extracted_df(input_path)
     df = df.dropna()
 
     # stop word removal
@@ -135,6 +116,33 @@ def parse_all_job_descriptions():
 def search_matching_jobs():
     return jsonify({'success': "200"})
 
+
+#Function to read data from google cloud storage and create a dataframe
+def get_extracted_df(input_path):
+    bucket_name = input_path.split("/")[-1]
+
+    path_to_private_key = 'fifth-compass-415612-76f634511b19.json'
+    client = storage.Client.from_service_account_json(json_credentials_path=path_to_private_key)
+    bucket = client.bucket(bucket_name)
+
+    str_folder_name_on_gcs = 'RESUME/data/'
+
+    # Create the directory locally
+    Path(str_folder_name_on_gcs).mkdir(parents=True, exist_ok=True)
+
+    blobs = bucket.list_blobs(prefix=str_folder_name_on_gcs)
+
+    # Limit to the first 100 blobs
+    # TODO we should be removing this slicing of blobs (to avoid performance issues) before checking in
+    limited_blobs = islice(blobs, 60)
+
+    # Use concurrent.futures for parallel processing
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        data_dicts = list(executor.map(process_blob, limited_blobs))
+
+    # Write the data dictionary to an Excel file
+    df = pd.DataFrame(data_dicts)
+    return df
 
 # Function to extract text from PDF using PyMuPDF
 def extract_text_from_pdf(pdf_bytes):
